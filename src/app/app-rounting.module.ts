@@ -22,8 +22,7 @@ const appRoutes: Routes = [
   {
     path: 'shopping-list',
     component: ShoppingListComponent,
-    children: [
-    ],
+    children: [],
   },
 ];
 
