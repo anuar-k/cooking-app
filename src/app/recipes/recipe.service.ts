@@ -2,33 +2,27 @@ import { Recipe } from '../shared/recipe.model';
 import { inject, Injectable } from '@angular/core';
 import { Ingredient } from '../shared/ingredient.model';
 import { ShoppingListService } from '../shopping-list/shopping-list.service';
-import { Subject } from 'rxjs';
+import { BehaviorSubject, Subject } from 'rxjs';
 
-@Injectable()
+@Injectable({providedIn: 'root'})
 export class RecipeService {
   private shoppingListService = inject(ShoppingListService);
-  updatedRecipe = new Subject<Recipe[]>();
+  private baseUrl =
+    'https://recipe-book-cc9f3-default-rtdb.firebaseio.com/recipes.json';
+  public updatedRecipe = new BehaviorSubject<Recipe[]>(null);
 
-  private recipes: Recipe[] = [
-    new Recipe(
-      'Recipe 1',
-      'Desc Recipe 1',
-      'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRwg1XMePvfuJrrEwoE41o8ODWXkr34jD4Klg&s',
-      [new Ingredient('Meat', 2), new Ingredient('French Fries', 20)]
-    ),
-    new Recipe(
-      'Big Fat Burger',
-      'What else you need to say?',
-      'https://img.freepik.com/free-psd/fresh-beef-burger-isolated-transparent-background_191095-9018.jpg?size=626&ext=jpg',
-      [new Ingredient('Buns', 2), new Ingredient('Meat', 1)]
-    ),
-  ];
+  private recipes: Recipe[] = [];
+
+  setRecipes(recipes: Recipe[]) {
+    this.recipes = recipes;
+    this.updatedRecipe.next(this.recipes.slice());
+  }
 
   getRecipeById(recipeId: number): Recipe {
     return this.recipes.find((recipe, index) => index === recipeId);
   }
 
-  getRecipe() {
+  getRecipes() {
     return this.recipes.slice();
   }
 
@@ -46,7 +40,7 @@ export class RecipeService {
     this.updatedRecipe.next(this.recipes.slice());
   }
 
-  deleteRecipe(index: number){
+  deleteRecipe(index: number) {
     this.recipes.splice(index, 1);
     this.updatedRecipe.next(this.recipes.slice());
   }

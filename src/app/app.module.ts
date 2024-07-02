@@ -1,44 +1,39 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
+
 import { AppComponent } from './app.component';
-import {HeaderComponent} from "./header/header.component";
-import {RecipesComponent} from "./recipes/recipes.component";
-import { RecipeItemComponent } from './recipes/recipe-list/recipe-item/recipe-item.component';
-import { RecipeDetailComponent } from './recipes/recipe-detail/recipe-detail.component';
-import { RecipeListComponent } from './recipes/recipe-list/recipe-list.component';
-import { ShoppingEditComponent } from './shopping-list/shopping-edit/shopping-edit.component';
-import { ShoppingListComponent } from './shopping-list/shopping-list.component';
-import {NgOptimizedImage} from "@angular/common";
-import {DropdownDirective} from "./shared/dropdown.directive";
-import {RecipeService} from "./recipes/recipe.service";
-import {ShoppingListService} from "./shopping-list/shopping-list.service";
-import {AppRoutingModule} from "./app-rounting.module";
-import {RecipeStartComponent} from "./recipes/recipe-start/recipe-start.component";
-import {RecipeEditComponent} from "./recipes/recipe-edit/recipe-edit.component";
+import { HeaderComponent } from './header/header.component';
+import { NgOptimizedImage } from '@angular/common';
+import { AppRoutingModule } from './app-rounting.module';
+import { AuthInterceptorService } from './auth/auth-interceptor.service';
+import { RecipeModule } from './recipes/recipe.module';
+import { ShoppingListModule } from './shopping-list/shopping-list.module';
+import { SharedModule } from './shared/shared.module';
+import { AuthModule } from './auth/auth.module';
 
 @NgModule({
   declarations: [
     AppComponent,
-    HeaderComponent,
-    RecipesComponent,
-    RecipeItemComponent,
-    RecipeDetailComponent,
-    RecipeListComponent,
-    ShoppingEditComponent,
-    ShoppingListComponent,
-    DropdownDirective,
-    RecipeStartComponent,
-    RecipeEditComponent
+    HeaderComponent
   ],
   imports: [
     BrowserModule,
-    FormsModule,
     NgOptimizedImage,
     AppRoutingModule,
-    ReactiveFormsModule,
+    HttpClientModule,
+    RecipeModule,
+    ShoppingListModule,
+    SharedModule,
+    AuthModule
   ],
-  providers: [RecipeService, ShoppingListService],
+  providers: [
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: AuthInterceptorService,
+      multi: true
+    },
+  ],
   bootstrap: [AppComponent]
 })
-export class AppModule { }
+export class AppModule {}
